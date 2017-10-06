@@ -1,0 +1,10 @@
+---
+title: "INDE498_HW1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+df.forbes <- read.csv("forbes.csv")
+df.males <- read.csv("Males.csv")
+```
+
