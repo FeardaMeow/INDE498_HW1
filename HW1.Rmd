@@ -8,4 +8,52 @@ df.forbes <- read.csv("forbes.csv")
 df.males <- read.csv("Males.csv")
 ```
 
-I am just testng out GitHub.
+#### Question 1 ####
+Repeat the analysis shown in the R lab of this chapter, but use TOTAL13 as the outcome variable. Please build both the regression model and the decision tree model (for regression). Identify the final models you would select, evaluate the models, and compare the regression model with the tree model.
+
+
+#### Question 2 ####
+Find two data sets from the UCI data repository or R datasets. Conduct a detailed regression analysis for both datasets using both regression model and the tree model (for regression), e.g., for regression model, you may want to conduct model selection, model comparison, testing of the significance of the regression parameters, evaluation of the R-squared and significance of the model. Also comment on the application of your model on the context of the dataset you have selected.
+
+#### Question 5 #### 
+Build a decision tree model based on the following dataset. Don't use R. Use your pen and paper, and show the process.
+
+
+#### Question 6 ####
+Write your own R script to implement the least squares estimation of a regression model. Compare the output from your script with the output from lm().
+
+We arbitrarily choose the number of input variables as p = 3, and define the following function. 
+
+```{r}
+#least_squares: Returns the least squares estimation of a regression model
+least_squares <- function(x1, x2, x3, y){ 
+  
+  # Creating the X and Y matrices
+  x_matrix = as.matrix(cbind(rep(1, 20), x1, x2, x3))
+  y_matrix = as.matrix(y)
+  
+  # Computing the beta estimator
+  beta_estimator = solve( t(x_matrix) %*% x_matrix ) %*% t(x_matrix) %*% y_matrix
+  
+  return(beta_estimator)
+} 
+```
+
+We can now compare our function against the output from lm()
+
+```{r}
+# Choose random x1, x2, x3 inputs
+x1 = runif(1:20)
+x2 = runif(1:20)
+x3 = runif(1:20)
+
+# Create an arbitrary y 
+y = 4 + 2*x1 + 1*x2 + 8*x3
+
+# Call our function: least_squares 
+least_squares(x1, x2, x3, y)
+
+# Calling the R function for linear regression: lm 
+lm(y~., data = data.frame(x1, x2, x3, y))
+
+```
