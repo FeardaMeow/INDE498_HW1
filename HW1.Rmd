@@ -18,6 +18,34 @@ Find two data sets from the UCI data repository or R datasets. Conduct a detaile
 #### Question 5 #### 
 Build a decision tree model based on the following dataset. Don't use R. Use your pen and paper, and show the process.
 
+```{r}
+df.q5 <- data.frame(x1=c(0.22,0.58,0.57,0.41,0.60,0.12,0.25,0.32), 
+                    x2=c(0.38,0.32,0.28,0.43,0.29,0.32,0.32,0.38), 
+                    y=factor(c("No","Yes","Yes","Yes","No","Yes","Yes","No")))
+ 
+```
+
+We chose an arbitrary rule of splitting on the 4 quantiles. The first split is on x2 at the 3rd quantile, which is $x2 \leq 0.38$. The left node will contain data points (1,2,3,5,6,7,8) and the right node will contain data point (4).
+
+\[e_{root} = -\frac{5}{8} log_{2}\frac{5}{8} - \frac{3}{8} log_{2}\frac{3}{8} = 0.9544\]
+\[e_{x2 \leq 0.38} =  -\frac{4}{7} log_{2}\frac{4}{7} - \frac{3}{7} log_{2}\frac{3}{7} = 0.9852\]
+\[e_{x2 \gt 0.38}  -\frac{1}{1} log_{2}\frac{1}{1} - \frac{0}{1} log_{2}\frac{0}{1} = 0\]
+\[IG = e_{root} - \frac{7}{8}*e_{x2 \leq 0.38}-\frac{1}{8}*e_{x2 \gt 0.38} = 0.0924\]
+
+The second split was done on left node containing data points (1,2,3,5,6,7,8) on x2 at the 3rd quantile, which is $x2 \leq 0.35$. The left node will contain data points (2,3,5,6,7) and the right node will contain data points (1,8).
+
+\[e_{root} = -\frac{4}{7} log_{2}\frac{4}{7} - \frac{3}{7} log_{2}\frac{3}{7} = 0.9852\]
+\[e_{x2 \leq 0.35} =  -\frac{4}{5} log_{2}\frac{4}{5} - \frac{1}{5} log_{2}\frac{1}{5} = 0.7219\]
+\[e_{x2 \gt 0.35}  -\frac{0}{2} log_{2}\frac{0}{2} - \frac{2}{2} log_{2}\frac{2}{2} = 0\]
+\[IG = e_{root} - \frac{5}{7}*e_{x2 \leq 0.35}-\frac{2}{7}*e_{x2 \gt 0.35} = 0.4696\]
+
+The third split was on the left node containin data points (2,3,5,6,7) on x1 at the 3rd quantile, which is $x1 \leq 0.58$. The left node will contain data points (2,3,6,7) and the right node will contain data point (5). 
+
+\[e_{root} = -\frac{4}{5} log_{2}\frac{4}{5} - \frac{1}{5} log_{2}\frac{1}{5} = 0.7219\]
+\[e_{x1 \leq 0.58} =  -\frac{4}{4} log_{2}\frac{4}{4} - \frac{0}{4} log_{2}\frac{0}{4} = 0\]
+\[e_{x1 \gt 0.58}  -\frac{0}{1} log_{2}\frac{0}{1} - \frac{1}{1} log_{2}\frac{1}{1} = 0\]
+\[IG = e_{root} - \frac{4}{5}*e_{x1 \leq 0.58}-\frac{1}{5}*e_{x1 \gt 0.58} = 0.7219\]
+
 
 #### Question 6 ####
 Write your own R script to implement the least squares estimation of a regression model. Compare the output from your script with the output from lm().
