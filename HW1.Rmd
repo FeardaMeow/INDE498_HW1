@@ -4,18 +4,79 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-df.forbes <- read.csv("forbes.csv")
+library(rpart)
+library(MASS)
+
+df.car <- read.csv("cu.summary.csv")
 df.males <- read.csv("Males.csv")
+
+#getting rid of column identifier
+df.males <- df.males[,-1]
+df.car <- df.car[,-1]
 ```
 
-#### Question 1 ####
+# Question 1
 Repeat the analysis shown in the R lab of this chapter, but use TOTAL13 as the outcome variable. Please build both the regression model and the decision tree model (for regression). Identify the final models you would select, evaluate the models, and compare the regression model with the tree model.
 
 
-#### Question 2 ####
+#Question 2
 Find two data sets from the UCI data repository or R datasets. Conduct a detailed regression analysis for both datasets using both regression model and the tree model (for regression), e.g., for regression model, you may want to conduct model selection, model comparison, testing of the significance of the regression parameters, evaluation of the R-squared and significance of the model. Also comment on the application of your model on the context of the dataset you have selected.
 
-#### Question 5 #### 
+## Car Dataset
+The first dataset we chose for modeling is the cu.summary dataset that contains automobile data taken from the April, 1990 issue of "Consumer Reports". The dataset contains 117 observations and 5 features. We are trying to predict the price of the car. A table of feature descriptions is provided below.
+
+| Feature Name | Description                                                                                 |
+|--------------|---------------------------------------------------------------------------------------------|
+| Price        | a numeric vector giving the list price in US dollars of a standard model                    |
+| Country      | Country of origin                                                                           |
+| Reliability  | an ordered factor with levels 'Much worse' < 'worse' < 'average' < 'better' < 'Much better' |
+| Mileage      | fuel consumption miles per US gallon                                                        |
+| Type         | a factor with levels Compact Large Medium Small Sporty Van                                  |
+
+### Linear Regression
+We first fit an initial model and analyze the summary to get an
+```{r}
+lm.car <- lm(Price~., data=df.car)
+summary(lm.car)
+lm.car <- stepAIC(lm.car, direction="both")
+summary(lm.car)
+```
+### Decision Tree
+```{r}
+tr.car <- rpart(Price~., data=df.car)
+```
+
+## Males Dataset
+The second dataset we chose for modeling is the Males dataset that recorded data about the wages and education of young males. The dataset contained 4360 observations and 12 features.  We are trying to predict the wage of the person. A table of feature descriptions is provided below.
+
+| Feature Name | Description                        |
+|--------------|------------------------------------|
+| nr           | unique identifier                  |
+| year         | year data was collected            |
+| school       | years of schooling                 |
+| exper        | years of experience                |
+| union        | wage set by collective bargaining? |
+| ethn         | ethnicity                          |
+| married      | are they married?                  |
+| health       | health problems?                   |
+| wage         | log of hourly wage                 |
+| industry     | work industry                      |
+| occupation   | job occupation                     |
+| residence    | area of residence                  |
+### Linear Regression
+```{r}
+lm.males <- lm(wage~., data=df.males)
+summary(lm.males)
+lm.males <- stepAIC(lm.males, direction="both")
+summary(lm.males)
+```
+
+### Decision Tree
+```{r}
+tr.males <- rpart(wage~.,data=df.males)
+```
+
+# Question 5 
 Build a decision tree model based on the following dataset. Don't use R. Use your pen and paper, and show the process.
 
 ```{r}
@@ -47,7 +108,7 @@ The third split was on the left node containin data points (2,3,5,6,7) on x1 at 
 \[IG = e_{root} - \frac{4}{5}*e_{x1 \leq 0.58}-\frac{1}{5}*e_{x1 \gt 0.58} = 0.7219\]
 
 
-#### Question 6 ####
+# Question 6
 Write your own R script to implement the least squares estimation of a regression model. Compare the output from your script with the output from lm().
 
 We arbitrarily choose the number of input variables as p = 3, and define the following function. 
