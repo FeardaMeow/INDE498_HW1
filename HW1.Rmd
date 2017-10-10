@@ -143,6 +143,7 @@ Including the interaction term increased R-squared value from 0.05359 (from the 
 require("ggfortify")
 autoplot(lm.AD_demo2, which = 1:6, ncol = 3, label.size = 3)
 ```
+
 Residuals vs fitted values is used to detect non-linearity, unequal error variances and outliers. Our graph shows no significant patterns, indicating the model is fairly fit. The residuals is clustered around the fitted line. Scale-Location and standarized resial shows no significant patterns either.
 
 Normal Q-Q shows if the data came from some theoretical distribution (ex. normal or exponential). Our graph is not perfectly straight, showing the opportunity to improve the model. 
@@ -351,17 +352,56 @@ The first dataset we chose for modeling is the cu.summary dataset that contains 
 | Type         | a factor with levels Compact Large Medium Small Sporty Van                                  |
 
 ### Linear Regression
-We first fit an initial model and analyze the summary to get an
+We fit a linear regression model with all of the features to predict the price of the car. 
+Looking at the summary, we see that this linear regression model explains 83.7% of the 
+variability in the data. 
 ```{r}
 lm.car <- lm(Price~., data=df.car)
 summary(lm.car)
+```
+
+We use the stepAIC function to identify and discard the insignificant features in our model. 
+Looking at the summary, we see that none of the features have been discarded, showing that 
+all of the features in our initial linear regression are significant. Also, let us note that 
+our initial model is the optimal linear regression model given the data. 
+
+Looking at the summary, we see that the features which increase the price are: the size of the vehicle (medium or large), 
+a better reliability, the country it was made in (Japan and Sweden), and the type of vehicle (sporty or van). Thus, three out of the four
+factors positively affect the price. The coefficients of the other features were all negative. 
+
+```{r}
 lm.car <- stepAIC(lm.car, direction="both")
 summary(lm.car)
 ```
-### Decision Tree
+
+We now analyze our final linear regression model by use of the residual vs fitted and QQ-plots. The residual vs fitted plot 
+shows randomly distributed points, which means that the regression assumptions have not been violated. The QQ-plot shows 
+points clustered along the line indicating that the dependent variables can plausibly be normally distributed. 
+
 ```{r}
+par(mar = rep(2, 4)) # Change the margins
+plot(lm.car, which=c(1))
+plot(lm.car, which=c(2))
+```
+
+This model can be used to study which factors have the biggest impact on increasing the price of a vehicle. 
+Understanding the extent in which certain features inflate the price of a vehicle can help manufacturers decide which
+areas they should focus on when attempting to decrease their prices.
+
+
+### Decision Tree
+A model of the decision tree fitted to our dataset is produced below. The decision tree only incorporates 
+two out of the four features; the tree incorporates the type and country of origin of each vehicle while 
+it discards the information pertaining to the reliability and mileage of the vehicle. In contrast, 
+the linear regression model incorporated all four of the given features and showed that including three of the 
+features would always positively affect the price. This discrepancy between models suggests that each model 
+may be able to better explain certain characteristics of the data. 
+
+```{r}
+library("rpart.plot")
+
 tr.car <- rpart(Price~., data=df.car)
-prp(tr.car, nn.cex=1)
+prp(tr.car, varlen=3)
 ```
 
 ## Males Dataset
