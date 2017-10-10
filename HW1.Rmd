@@ -43,7 +43,7 @@ p <- p + geom_point(size=4)
 p <- p + labs(title="TOTAL13 versus PTEDUCAT")
 print(p)
 ```
-#scatter plot "TOTAL13 versus PTEDUCAT" shows a weak positive relationship between predictors with TOTAL13
+Scatter plot "TOTAL13 versus PTEDUCAT" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
 # ggplot: Plot the scatterplot of the data
@@ -55,7 +55,7 @@ p <- p + geom_point(size=4)
 p <- p + labs(title="TOTAL13 versus AGE")
 print(p)
 ```
-#scatter plot "TOTAL13 versus AGE" shows a weak positive relationship between predictors with TOTAL13
+Scatter plot "TOTAL13 versus AGE" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
 # install.packages("car")
@@ -65,8 +65,7 @@ lm.AD_demo <- lm(TOTAL13 ~ AGE, data = AD_demo)
 # use summary() to get t-tests of parameters (slope, intercept)
 summary(lm.AD_demo)
 ```
-#'AGE' is statistically significant with p-value of 0.000116, rejecting null hypothesis (H0: no relationship between TOTAL 13 and AGE)
-# R-squared is 0.02845, indicating that 'AGE' predictor represents only 2.8% of variability in TOTAL 13
+'AGE' is statistically significant with p-value of 0.000116, rejecting null hypothesis (H0: no relationship between TOTAL 13 and AGE). R-squared is 0.02845, indicating that 'AGE' predictor represents only 2.8% of variability in TOTAL 13
 
 ```{r}
 # fit the multiple linear regression model with more than one predictor
@@ -74,8 +73,7 @@ lm.AD_demo2 <- lm(TOTAL13 ~ AGE + PTGENDER + PTEDUCAT, data = AD_demo)
 summary(lm.AD_demo2)
 ```
 
-# With all three demographics varibles included into the model, R-squared value increased to 0.05359, indicating 5.4% of variability in TOTAL 13 can be explained by the three variables. 
-#P-value of all three variabbles are significant as their p-values are 0.00106, 0.00220,0.00830, all less than 0.01. 
+With all three demographics varibles included into the model, R-squared value increased to 0.05359, indicating 5.4% of variability in TOTAL 13 can be explained by the three variables. P-value of all three variabbles are significant as their p-values are 0.00106, 0.00220,0.00830, all less than 0.01. 
 
 ```{r}
 # How to detect interaction terms by exploratory data analysis (EDA)
@@ -87,7 +85,7 @@ p <- p + labs(title="TOTAL13 versus PTEDUCAT")
 print(p)
 ```
 
-#Because the relationship between Total 13 and PTEDUCAT changes according to the levels of AGE, the same scatterplot on two levels of age can be examined.
+Because the relationship between Total 13 and PTEDUCAT changes according to the levels of AGE, the same scatterplot on two levels of age can be examined.
 
 ```{r}
 p <- ggplot(AD_demo[which(AD_demo$AGE < 60),], aes(x = PTEDUCAT, y = TOTAL13))
@@ -103,7 +101,7 @@ p <- p + labs(title="TOTAL13 versus PTEDUCAT when AGE > 80")
 print(p)
 ```
 
-# TOTAL13 shows very weak positive correlation with PTEDUCAT when AGE < 60. On the other hand, TOTAL13 is negatively correlated with PTEDUCAT for those who are older than 80 years old.
+TOTAL13 shows very weak positive correlation with PTEDUCAT when AGE < 60. On the other hand, TOTAL13 is negatively correlated with PTEDUCAT for those who are older than 80 years old.
 
 
 
@@ -130,14 +128,14 @@ p <- p + geom_point(size=2)
 p <- p + labs(title="TOTAL13 versus Age - female")
 print(p)
 ```
-#scatter plot between AGE and TOTAL13 for male shows more spread out patterns than those for female.
+Scatter plot between AGE and TOTAL13 for male shows more spread out patterns than those for female.
 
 ```{r}
 # fit the multiple linear regression model with an interaction term: AGE*PTEDUCAT
 lm.AD_demo2 <- lm(TOTAL13 ~ AGE + PTGENDER + PTEDUCAT + AGE*PTEDUCAT, data = AD_demo)
 summary(lm.AD_demo2)
 ```
-#Including the interaction term increased R-squared value from 0.05359 (from the AD_demo without the interation term) to 0.05614. However, the interaction term is not statistically significant to reject the null hypothesis because the p-value was 0.24, more than 0.05.
+Including the interaction term increased R-squared value from 0.05359 (from the AD_demo without the interation term) to 0.05614. However, the interaction term is not statistically significant to reject the null hypothesis because the p-value was 0.24, more than 0.05.
 
 ```{r}
 # Conduct diagnostics of the model
@@ -145,11 +143,11 @@ summary(lm.AD_demo2)
 require("ggfortify")
 autoplot(lm.AD_demo2, which = 1:6, ncol = 3, label.size = 3)
 ```
-#Residuals vs fitted values is used to detect non-linearity, unequal error variances and outliers. Our graph shows no significant patterns, indicating the model is fairly fit. The residuals is clustered around the fitted line. Scale-Location and standarized resial shows no significant patterns either.
+Residuals vs fitted values is used to detect non-linearity, unequal error variances and outliers. Our graph shows no significant patterns, indicating the model is fairly fit. The residuals is clustered around the fitted line. Scale-Location and standarized resial shows no significant patterns either.
 
-# Normal Q-Q shows if the data came from some theoretical distribution (ex. normal or exponential). Our graph is not perfectly straight, showing the opportunity to improve the model. 
+Normal Q-Q shows if the data came from some theoretical distribution (ex. normal or exponential). Our graph is not perfectly straight, showing the opportunity to improve the model. 
 
-# we can try add more predictors to improve the model:
+We tried add more predictors to improve the model:
 
 ```{r}
 # fit a full-scale model
@@ -158,8 +156,9 @@ lm.AD <- lm(TOTAL13 ~ ., data = AD_full)
 # anova(lm.AD, type=3)
 summary(lm.AD)
 ```
-#To predict TOTAL13 VALUE, a full model was built with all the demographics,genetics and imaging variables. FDG, AV45, Hipponv, MMSCORE are significant based on p-values. 
-#R-squared is now increased to 0.5673, indicating 56% of the variability in TOTAL13 can be explained by the variables.
+
+To predict TOTAL13 VALUE, a full model was built with all the demographics,genetics and imaging variables. FDG, AV45, Hipponv, MMSCORE are significant based on p-values. 
+R-squared is now increased to 0.5673, indicating 56% of the variability in TOTAL13 can be explained by the variables.
 
 ```{r}
 # Do we need all the variables?
@@ -168,20 +167,22 @@ lm.AD.reduced <- lm.AD;
 lm.AD.reduced <- update(lm.AD.reduced, ~ . - AGE); 
 summary(lm.AD.reduced);
 ```
-#R-squared value was slightly reduced from 0.5673 to 0.5672, but almost no effects. We can use F-test to compare the full model with this new model by applying anova() function.
+R-squared value was slightly reduced from 0.5673 to 0.5672, but almost no effects. We can use F-test to compare the full model with this new model by applying anova() function.
 
 ```{r}
 anova(lm.AD.reduced,lm.AD)
 ```
-# By F-test, p-velue is 0.7027 which indicates that two models are statisticaly indistinguishable. 
-#We can try to remove the latest last significant predictor, e2_1.
+
+By F-test, p-velue is 0.7027 which indicates that two models are statisticaly indistinguishable. 
+We tried to remove the latest last significant predictor, e2_1.
+
 ```{r}
 #further remove rs11136000, as it is now the least significant
 lm.AD.reduced <- update(lm.AD.reduced, ~ . - e2_1); 
 summary(lm.AD.reduced);
 anova(lm.AD.reduced,lm.AD)
 ```
-#we can repeat this process until no more variable could be deleted or use step() function to achieve the automation of this.
+We can repeat this process until no more variable could be deleted or use step() function to achieve the automation of this.
 
 ```{r}
 # Automatic model selection
@@ -189,8 +190,8 @@ lm.AD.F <- step(lm.AD, direction="backward", test="F")
 summary(lm.AD.F)
 anova(lm.AD.F ,lm.AD)
 ```
-# By using final 6 predictors, R-squared value is 0.5633, which is not too far off from the R-squared value of 0.5673 that was resulted by the model using all 16 predictors. 
-# By applying F-test using anova() function, two models are statistically indistingushiable with p-value as 0.9158.
+By using final 6 predictors, R-squared value is 0.5633, which is not too far off from the R-squared value of 0.5673 that was resulted by the model using all 16 predictors. 
+By applying F-test using anova() function, two models are statistically indistingushiable with p-value as 0.9158.
 
 
 
@@ -201,10 +202,10 @@ anova(lm.AD.F ,lm.AD)
 library("ggfortify")
 autoplot(lm.AD.F, which = 1:6, ncol = 3, label.size = 3)
 ```
-#Residuals vs fitted graph and scale location graph still do not show significant patterns in the graphs, indicating the assumption of non-linearity was not violated significantly.Normal Q-Q plot for the new model improved a lot from the previous model with only demographic predictors. 
+Residuals vs fitted graph and scale location graph still do not show significant patterns in the graphs, indicating the assumption of non-linearity was not violated significantly.Normal Q-Q plot for the new model improved a lot from the previous model with only demographic predictors. 
 
 #FINAL MODEL
-#Therefore, we decided to select the model with the 6 predictors (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE) as the final model. 
+Therefore, we decided to select the model with the 6 predictors (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE) as the final model. 
 
 ```{r}
 # Evaluate the variable importance by all subsets regression
@@ -217,24 +218,22 @@ summary(leaps)
 # models are ordered by the selection statistic.
 plot(leaps,scale="r2")
 ```
-# leaps() function shows which model acheive highest R-squared value and which variables frequently appear on these models. By observing the graph, the highest R-squared value is resulted in the model that uses 8 predictors that are PTGENDER, FDG, AV45, HippoNV, rs744373, rs610932, rs3764650, MMSCORE. 6 predictors out of these 8 predictors are found in the model that we chose as the final model.
+leaps() function shows which model acheive highest R-squared value and which variables frequently appear on these models. By observing the graph, the highest R-squared value is resulted in the model that uses 8 predictors that are PTGENDER, FDG, AV45, HippoNV, rs744373, rs610932, rs3764650, MMSCORE. 6 predictors out of these 8 predictors are found in the model that we chose as the final model.
 
 
 #----limitations of linear regression-------
-#Passing significance test and fitting the model only mean that there is nothing significant against the model, meaning this is not the causal model therefore, other models can also fit the data possibliy. 
+Passing significance test and fitting the model only mean that there is nothing significant against the model, meaning this is not the causal model therefore, other models can also fit the data possibliy. 
 
-#assumptions of the estimations
-#1. the estimations of the regression parameters are independent ( correlations are zero)
-#2. the variances of the regression parameters are the same
+assumptions of the estimations
+1. the estimations of the regression parameters are independent ( correlations are zero)
+2. the variances of the regression parameters are the same
 
 #----interaction terms ------
-#interactions of the predictors could contribute extra prediction power. Both contextual knowledge and meticulous craftwork of anlytics are needed to recognize important interation terms to be included in the model.
+Interactions of the predictors could contribute extra prediction power. Both contextual knowledge and meticulous craftwork of anlytics are needed to recognize important interation terms to be included in the model.
 
-# scatter plots can be used to visualize the relationship between any variable with the outcome. They provides insights on how the relationship changes according to anotherariable 
+Scatter plots can be used to visualize the relationship between any variable with the outcome. They provides insights on how the relationship changes according to anotherariable 
 
-#reference: textbook
-
-#for continuous predictors:
+For continuous predictors:
 ```{r}
 # Supplement the model with some visualization of the statistical patterns
 # Scatterplot matrix to visualize the relationship between outcome variable with continuous predictors
@@ -248,7 +247,7 @@ p <- ggpairs(AD[,c(17,1,3,4,5,6)], upper = list(continuous = "points")
 print(p)
 ```
 
-#for categorical predictors:
+For categorical predictors:
 ```{r}
 # Boxplot to visualize the relationship between outcome variable with categorical predictors
 library(ggplot2)
@@ -284,7 +283,7 @@ qplot(TOTAL13, data = AD[,c(10,12,15,17)], geom = "histogram",
 
 #Decision tree
 
-#using all variables:
+Using all variables:
 ```{r}
 library(rpart)
 library(rpart.plot)
@@ -309,15 +308,15 @@ prp(tree, nn.cex = 1)
 
 
 ```
-#Because TOTAL13 is the continuous variables, the values of a variable are firstly ordered, and then the average of each pair of consecutive values is used as the splitting value. 
+Because TOTAL13 is the continuous variables, the values of a variable are firstly ordered, and then the average of each pair of consecutive values is used as the splitting value. 
 
 ```{r}
 print(tree$variable.importance)
 ```
-# MMSCORE  has the largest importance scores amongall variables.
+MMSCORE  has the largest importance scores amongall variables.
 
 
-#The tree can be further pruned with the prune function whereas the parameter cp controls the model complexity. cp is the minimum relative error improved by splitting the node. A larger cp leads to a less-complex tree. First, let we try cp = 0.05 and then cp = 0.1
+The tree can be further pruned with the prune function whereas the parameter cp controls the model complexity. cp is the minimum relative error improved by splitting the node. A larger cp leads to a less-complex tree. First, let we try cp = 0.05 and then cp = 0.1
 ```{r}
 tree_0.05 <- prune(tree, cp = 0.05)
 prp(tree_0.05, nn.cex = 1)
@@ -326,15 +325,16 @@ prp(tree_0.05, nn.cex = 1)
 tree_0.1 <- prune(tree, cp = 0.1)
 prp(tree_0.1, nn.cex = 1)
 ```
-# cp can be used to control the model complexity in pruning. cp can be decided by minimizing the cross-validation error. #For each tree, the number of decision nodes is recorded and used for measuring the complexity of the tree.
+cp can be used to control the model complexity in pruning. cp can be decided by minimizing the cross-validation error. #For each tree, the number of decision nodes is recorded and used for measuring the complexity of the tree.
 
-# Comparison between regression model and tree model: 
+#Comparison between regression model and tree model
 
-#Decision tree selected the 4 variables : MMSCORE, HippoNV, FDG and e4_1 as nodes. #Three variables including FDB, HippoNV, MMSCORE are the common variables with the fianl model with 6 valueables (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE).
+Decision tree selected the 4 variables : MMSCORE, HippoNV, FDG and e4_1 as nodes. #Three variables including FDB, HippoNV, MMSCORE are the common variables with the fianl model with 6 valueables (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE).
 
-#when applying a decision tree to a dataset with linear relationship between predictors and outcome variables, it may not be an optimal choice. It can be seen the classification boundary from the logistics regression model is linear, while the one from the decision tree is parallel to the axis. This limitation makes a decision tree not be able to fully capture the linear relationship in the data.
+when applying a decision tree to a dataset with linear relationship between predictors and outcome variables, it may not be an optimal choice. It can be seen the classification boundary from the logistics regression model is linear, while the one from the decision tree is parallel to the axis. This limitation makes a decision tree not be able to fully capture the linear relationship in the data.
 
-#Reference: textbook, PennState Eberly College of Science (https://onlinecourses.science.psu.edu/stat501), University of Virginia Library (http://data.library.virginia.edu/understanding-q-q-plots/)
+#Reference: 
+textbook, PennState Eberly College of Science (https://onlinecourses.science.psu.edu/stat501), University of Virginia Library (http://data.library.virginia.edu/understanding-q-q-plots/)
 
 #Question 2
 Find two data sets from the UCI data repository or R datasets. Conduct a detailed regression analysis for both datasets using both regression model and the tree model (for regression), e.g., for regression model, you may want to conduct model selection, model comparison, testing of the significance of the regression parameters, evaluation of the R-squared and significance of the model. Also comment on the application of your model on the context of the dataset you have selected.
