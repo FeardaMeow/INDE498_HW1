@@ -428,7 +428,7 @@ We first fit an initial linear regression model with all of the features to pred
 lm.males <- lm(wage~., data=df.males)
 summary(lm.males)
 ```
-Next we used some feature selection using stepwise regresssion to fit the best model. The final model produced from the stepwise regression found all but the health feature to be signficant. By analyzing the difference in the models, we can see that the R-squared was only reduced to 28.53%. The final found every feature and the intercept to be significant. When looking at the coeffecients, that years of schooling, year of experience, union, ethnicity, and being married all had a positive impact on wages per unit increase while keeping all others constant. Other coeffecients were a mix of positive and negative values. 
+Next we used some feature selection using stepwise regresssion to fit the best model. The final model produced from the stepwise regression found all but the health feature to be signficant. By analyzing the difference in the models, we can see that the R-squared was only reduced to 28.53%. The final found all included features to be significant at a 0.05 level. When looking at the coeffecients, that years of schooling, year of experience, union, ethnicity, and being married all had a positive impact on wages per unit increase while keeping all others constant. Other coeffecients were a mix of positive and negative values depending on the specific categorical value taken. 
 
 ```{r}
 lm.males <- stepAIC(lm.males, direction="both")
@@ -443,7 +443,7 @@ plot(lm.males, which=c(2))
 The applications of this model could be used to study what types of features are correlated most with a high wage. This could be important in helping to decide policy of whether more education helps to increase wage and to study if there are discrepencies among different socioeconomic factors. 
 
 ### Decision Tree
-A decision tree was fit to the data and the output of the model is seen below. Compared to the regression model, the decision tree only incorporated the use of 5 out of 11 features. These features are industry, years of schooling, year the data was collected, married, and years of work experience. From the analyzing the rules the decision tree came up with, the observations with the highest wage are those who have 12+ years of school. This type can be used to see if there are any underlying patterns in the data that a linear regression might not be able to ascertain. 
+A decision tree was fit to the data and the output of the model is seen below. Compared to the regression model, the decision tree only incorporated the use of 5 out of 11 features. These features are industry, years of schooling, year the data was collected, married, and years of work experience. From the analyzing the rules the decision tree came up with, the observations with the highest wage are those who have 12+ years of school and are not a part of the agriculture, construction, entertainment, personal services, professional services, and transportation. This type can be used to see if there are any underlying patterns in the data that a linear regression might not be able to ascertain and can be used to predict wages of young professional males.
 ```{r}
 tr.males <- rpart(wage~.,data=df.males)
 prp(tr.males, nn.cex=1)
