@@ -1,6 +1,8 @@
 ---
 title: "INDE498_HW1"
-output: html_document
+author: "Steven Hwang, 	Haena Kim, Victoria Diaz"
+output:
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -38,6 +40,7 @@ p <- p + geom_point(size=4)
 p <- p + labs(title="TOTAL13 versus PTEDUCAT")
 print(p)
 ```
+
 Scatter plot "TOTAL13 versus PTEDUCAT" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
@@ -48,6 +51,7 @@ p <- p + geom_point(size=4)
 p <- p + labs(title="TOTAL13 versus AGE")
 print(p)
 ```
+
 Scatter plot "TOTAL13 versus AGE" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
@@ -113,6 +117,7 @@ p <- p + geom_point(size=2)
 p <- p + labs(title="TOTAL13 versus Age - female")
 print(p)
 ```
+
 Scatter plot between AGE and TOTAL13 for male shows more spread out patterns than those for female.
 
 ```{r}
@@ -183,6 +188,7 @@ By applying F-test using anova() function, two models are statistically indistin
 library("ggfortify")
 autoplot(lm.AD.F, which = 1:6, ncol = 3, label.size = 3)
 ```
+
 Residuals vs fitted graph and scale location graph still do not show significant patterns in the graphs, indicating the assumption of non-linearity was not violated significantly.Normal Q-Q plot for the new model improved a lot from the previous model with only demographic predictors. 
 
 #FINAL MODEL
@@ -200,6 +206,7 @@ summary(leaps)
 # models are ordered by the selection statistic.
 plot(leaps,scale="r2")
 ```
+
 leaps() function shows which model acheive highest R-squared value and which variables frequently appear on these models. By observing the graph, the highest R-squared value is resulted in the model that uses 8 predictors that are PTGENDER, PTEDUCAT, FDG, AV45, HippoNV, rs3818361, rs610932, rs3865444. All of 6 predictors used in our final model (PTEDUCAT,FDG,AV45,HippoNV,rs610932 ,rs3865444) were included in these 8 predictors.
 
 
@@ -279,6 +286,7 @@ prp(tree, nn.cex = 1)
 
 
 ```
+
 Because TOTAL13 is the continuous variables, the average of each pair of consecutive values is used as splitting value the values.
 
 ```{r}
@@ -296,6 +304,7 @@ prp(tree_0.05, nn.cex = 1)
 tree_0.1 <- prune(tree, cp = 0.2)
 prp(tree_0.1, nn.cex = 1)
 ```
+
 As cp value becomes larger, the size of decision tree becomes smaller. 
 
 
@@ -337,6 +346,7 @@ ggplot(data.plot, aes(x=leaf_num, y=error, shape = type, color=type)) + geom_lin
 ```
 
 Final decision tree model can be selected with the 5 decision (leaf) nodes WITH cp = 0.02
+
 ```{r}
 tree_0.020 <- prune(tree, cp = 0.02)
 prp(tree_0.05, nn.cex = 1)
@@ -351,8 +361,9 @@ Decision tree used the 4 variables :  FDG, HippoNV, AV45, AGE for the 5 decision
 Mean square error (MSE) can be used for comparing the two models. 
 
 MSE of our regression model can be calculated as:
+
 ```{r}
-install.packages("Metrics")
+# install.packages("Metrics")
 library(Metrics)
 
 predictedvalue <- predict(lm.AD.F,data)
@@ -367,8 +378,8 @@ mean((data$TOTAL13-predictedvalue)^2)
 MSE of our decision tree model can be calculated as:
 
 ```{r}
-install.packages("Metrics")
-library(Metrics)
+# install.packages("Metrics")
+# library(Metrics)
 
 predictedvalue <- predict(tree_0.020,data)
 mse(data$TOTAL13,predictedvalue)
