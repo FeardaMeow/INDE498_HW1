@@ -340,6 +340,7 @@ Final decision tree model can be selected with the 5 decision (leaf) nodes WITH 
 ```{r}
 tree_0.020 <- prune(tree, cp = 0.02)
 prp(tree_0.05, nn.cex = 1)
+
 ```
 
 
@@ -360,6 +361,7 @@ mse(data$TOTAL13,predictedvalue)
 #double check the function mse() is working
 mean((data$TOTAL13-predictedvalue)^2)
 
+
 ```
 
 MSE of our decision tree model can be calculated as:
@@ -373,6 +375,7 @@ mse(data$TOTAL13,predictedvalue)
 
 #double check the function mse() is working
 mean((data$TOTAL13-predictedvalue)^2)
+
 
 ```
 
