@@ -20,55 +20,45 @@ Repeat the analysis shown in the R lab of this chapter, but use TOTAL13 as the o
 
 ```{r}
 library(RCurl)
-#### Example: Alzheimer's Disease
-# filename
 AD <- read.csv(text=getURL("https://raw.githubusercontent.com/shuailab/ind_498/master/resource/data/AD2.csv"))
 AD$ID = c(1:dim(AD)[1])
 str(AD)
 ```
 
 ```{r}
-# subset of variables we want in our first model that only uses demographics predictors
 AD_demo <- subset(AD, select=c("TOTAL13", "AGE","PTGENDER","PTEDUCAT","ID"))
 str(AD_demo)
 ```
 
 ```{r}
-# ggplot: Plot the scatterplot of the data
-# install.packages("ggplot2")
+
 library(ggplot2)
 p <- ggplot(AD_demo, aes(x = PTEDUCAT, y = TOTAL13))
 p <- p + geom_point(size=4)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus PTEDUCAT")
 print(p)
 ```
 Scatter plot "TOTAL13 versus PTEDUCAT" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
-# ggplot: Plot the scatterplot of the data
-# install.packages("ggplot2")
+
 library(ggplot2)
 p <- ggplot(AD_demo, aes(x = AGE, y = TOTAL13))
 p <- p + geom_point(size=4)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus AGE")
 print(p)
 ```
 Scatter plot "TOTAL13 versus AGE" shows a weak positive relationship between predictors with TOTAL13
 
 ```{r}
-# install.packages("car")
+# fit a simple linear regression model with AGE
 library(car)
-# fit a simple linear regression model with only AGE
 lm.AD_demo <- lm(TOTAL13 ~ AGE, data = AD_demo)
-# use summary() to get t-tests of parameters (slope, intercept)
 summary(lm.AD_demo)
 ```
 'AGE' is statistically significant with p-value of 0.000116, rejecting null hypothesis (H0: no relationship between TOTAL 13 and AGE). R-squared is 0.02845, indicating that 'AGE' predictor represents only 2.8% of variability in TOTAL 13
 
 ```{r}
-# fit the multiple linear regression model with more than one predictor
 lm.AD_demo2 <- lm(TOTAL13 ~ AGE + PTGENDER + PTEDUCAT, data = AD_demo)
 summary(lm.AD_demo2)
 ```
@@ -76,11 +66,10 @@ summary(lm.AD_demo2)
 With all three demographics varibles included into the model, R-squared value increased to 0.05359, indicating 5.4% of variability in TOTAL 13 can be explained by the three variables. P-value of all three variabbles are significant as their p-values are 0.00106, 0.00220,0.00830, all less than 0.01. 
 
 ```{r}
-# How to detect interaction terms by exploratory data analysis (EDA)
+
 require(ggplot2)
 p <- ggplot(AD_demo, aes(x = PTEDUCAT, y = TOTAL13))
 p <- p + geom_point(aes(colour=AGE), size=2)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus PTEDUCAT")
 print(p)
 ```
@@ -104,42 +93,37 @@ print(p)
 TOTAL13 shows very weak positive correlation with PTEDUCAT when AGE < 60. On the other hand, TOTAL13 is negatively correlated with PTEDUCAT for those who are older than 80 years old.
 
 
-
 ```{r}
 
 p <- ggplot(AD_demo, aes(x = AGE, y = TOTAL13))
 p <- p + geom_point(size=2)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus Age")
 print(p)
 
-# re-draw the scatterplot for male
+#for male
 p <- ggplot(AD_demo[which(AD_demo$PTGENDER == 1),], aes(x = AGE, y = TOTAL13))
 p <- p + geom_point(size=2)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus Age - male")
 print(p)
 
 
-# re-draw the scatterplot for female
+# for female
 p <- ggplot(AD_demo[which(AD_demo$PTGENDER == 2),], aes(x = AGE, y = TOTAL13))
 p <- p + geom_point(size=2)
-# p <- p + geom_smooth(method = "auto")
 p <- p + labs(title="TOTAL13 versus Age - female")
 print(p)
 ```
 Scatter plot between AGE and TOTAL13 for male shows more spread out patterns than those for female.
 
 ```{r}
-# fit the multiple linear regression model with an interaction term: AGE*PTEDUCAT
+# inlcuding interaction term: AGE*PTEDUCAT
 lm.AD_demo2 <- lm(TOTAL13 ~ AGE + PTGENDER + PTEDUCAT + AGE*PTEDUCAT, data = AD_demo)
 summary(lm.AD_demo2)
 ```
 Including the interaction term increased R-squared value from 0.05359 (from the AD_demo without the interation term) to 0.05614. However, the interaction term is not statistically significant to reject the null hypothesis because the p-value was 0.24, more than 0.05.
 
 ```{r}
-# Conduct diagnostics of the model
-# install.packages("ggfortify")
+# Diagnostics graphs:
 require("ggfortify")
 autoplot(lm.AD_demo2, which = 1:6, ncol = 3, label.size = 3)
 ```
@@ -151,62 +135,59 @@ Normal Q-Q shows if the data came from some theoretical distribution (ex. normal
 We tried add more predictors to improve the model:
 
 ```{r}
-# fit a full-scale model
+# try full-scale model - exclude MMSCORE as it is other output 
 AD_full <- AD[,c(1:17)]
+AD_full <- subset(AD_full, select = -c(MMSCORE) )
+names(AD_full)
 lm.AD <- lm(TOTAL13 ~ ., data = AD_full)
-# anova(lm.AD, type=3)
 summary(lm.AD)
 ```
 
-To predict TOTAL13 VALUE, a full model was built with all the demographics,genetics and imaging variables. FDG, AV45, Hipponv, MMSCORE are significant based on p-values. 
-R-squared is now increased to 0.5673, indicating 56% of the variability in TOTAL13 can be explained by the variables.
+To predict TOTAL13 Value, a full model was built with all the demographics,genetics and imaging variables.PTEDUCAT, FDG, AV45, Hipponv, rs610932 are significant based on p-values. 
+R-squared is now increased to 0.4423, indicating 44% of the variability in TOTAL13 can be explained by the variables.
 
 ```{r}
-# Do we need all the variables?
-# remove age, as it is least significant with p-value of 0.702677
+# try taking AGE out to find differences
 lm.AD.reduced <- lm.AD;
 lm.AD.reduced <- update(lm.AD.reduced, ~ . - AGE); 
 summary(lm.AD.reduced);
 ```
-R-squared value was slightly reduced from 0.5673 to 0.5672, but almost no effects. We can use F-test to compare the full model with this new model by applying anova() function.
+R-squared value was slightly reduced from 0.4423 to 0.4414, but almost no effects. We can use F-test to compare the full model with this new model by applying anova() function.
 
 ```{r}
 anova(lm.AD.reduced,lm.AD)
 ```
 
-By F-test, p-velue is 0.7027 which indicates that two models are statisticaly indistinguishable. 
-We tried to remove the latest last significant predictor, e2_1.
+By F-test, p-velue is 0.7692 which indicates that two models are statisticaly indistinguishable. 
+We tried to remove the latest last significant predictor, e4_1.
 
 ```{r}
-#further remove rs11136000, as it is now the least significant
-lm.AD.reduced <- update(lm.AD.reduced, ~ . - e2_1); 
+lm.AD.reduced <- update(lm.AD.reduced, ~ . - e4_1); 
 summary(lm.AD.reduced);
 anova(lm.AD.reduced,lm.AD)
 ```
 We can repeat this process until no more variable could be deleted or use step() function to achieve the automation of this.
 
 ```{r}
-# Automatic model selection
+# model selection
 lm.AD.F <- step(lm.AD, direction="backward", test="F")
 summary(lm.AD.F)
 anova(lm.AD.F ,lm.AD)
 ```
-By using final 6 predictors, R-squared value is 0.5633, which is not too far off from the R-squared value of 0.5673 that was resulted by the model using all 16 predictors. 
-By applying F-test using anova() function, two models are statistically indistingushiable with p-value as 0.9158.
-
+By using final 6 predictors, R-squared value is 0.4366, which is not too far off from the R-squared value of 0.4423 that was resulted by the model using all predictors. 
+By applying F-test using anova() function, two models are statistically indistingushiable with p-value as 0.8287.
 
 
 ```{r}
-
-# Conduct diagnostics of the model
-# install.packages("ggfortify")
+# Diagnostics graphs:
 library("ggfortify")
 autoplot(lm.AD.F, which = 1:6, ncol = 3, label.size = 3)
 ```
 Residuals vs fitted graph and scale location graph still do not show significant patterns in the graphs, indicating the assumption of non-linearity was not violated significantly.Normal Q-Q plot for the new model improved a lot from the previous model with only demographic predictors. 
 
 #FINAL MODEL
-Therefore, we decided to select the model with the 6 predictors (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE) as the final model. 
+Therefore, we decided to select the model with the 6 predictors (PTEDUCAT,FDG,AV45,HippoNV,rs610932 ,rs3865444) as the final model. 
+
 
 ```{r}
 # Evaluate the variable importance by all subsets regression
@@ -219,29 +200,25 @@ summary(leaps)
 # models are ordered by the selection statistic.
 plot(leaps,scale="r2")
 ```
-leaps() function shows which model acheive highest R-squared value and which variables frequently appear on these models. By observing the graph, the highest R-squared value is resulted in the model that uses 8 predictors that are PTGENDER, FDG, AV45, HippoNV, rs744373, rs610932, rs3764650, MMSCORE. 6 predictors out of these 8 predictors are found in the model that we chose as the final model.
+leaps() function shows which model acheive highest R-squared value and which variables frequently appear on these models. By observing the graph, the highest R-squared value is resulted in the model that uses 8 predictors that are PTGENDER, PTEDUCAT, FDG, AV45, HippoNV, rs3818361, rs610932, rs3865444. All of 6 predictors used in our final model (PTEDUCAT,FDG,AV45,HippoNV,rs610932 ,rs3865444) were included in these 8 predictors.
 
 
 #----limitations of linear regression-------
 Passing significance test and fitting the model only mean that there is nothing significant against the model, meaning this is not the causal model therefore, other models can also fit the data possibliy. 
 
 assumptions of the estimations
-1. the estimations of the regression parameters are independent ( correlations are zero)
+1. the estimations of the regression parameters are independent (correlations are zero)
 2. the variances of the regression parameters are the same
 
 #----interaction terms ------
-Interactions of the predictors could contribute extra prediction power. Both contextual knowledge and meticulous craftwork of anlytics are needed to recognize important interation terms to be included in the model.
+Interactions of the predictors could provide useful insights additionally. However, choosing which interaction terms are difficult. Careful and thorough analytics require in selecting interaction terms before including them into the model. 
 
-Scatter plots can be used to visualize the relationship between any variable with the outcome. They provides insights on how the relationship changes according to anotherariable 
+Scatter plots helps visualizing the relationship between any variable with the outcome. Insights on how the relationship changes according to another variables can be achieved. 
 
 For continuous predictors:
 ```{r}
-# Supplement the model with some visualization of the statistical patterns
-# Scatterplot matrix to visualize the relationship between outcome variable with continuous predictors
 library(ggplot2)
-# install.packages("GGally")
 library(GGally)
-# draw the scatterplots and also empirical shapes of the distributions of the variables
 p <- ggpairs(AD[,c(17,1,3,4,5,6)], upper = list(continuous = "points")
              , lower = list(continuous = "cor")
 )
@@ -250,7 +227,7 @@ print(p)
 
 For categorical predictors:
 ```{r}
-# Boxplot to visualize the relationship between outcome variable with categorical predictors
+# Boxplot
 library(ggplot2)
 qplot(factor(PTGENDER), TOTAL13, data = AD, 
       geom=c("boxplot"), fill = factor(PTGENDER))
@@ -266,7 +243,7 @@ qplot(factor(rs3865444), TOTAL13, data = AD,
       geom=c("boxplot"), fill = factor(rs3865444))
 
 
-# Histogram to visualize the relationship between outcome variable with categorical predictors
+# Histogram
 library(ggplot2)
 qplot(TOTAL13, data = AD, geom = "histogram",
       fill = factor(PTGENDER))
@@ -294,45 +271,112 @@ library(ggplot2)
 library(partykit)
 
 
-library(RCurl)
-#### Example: Alzheimer's Disease
-# filename
-AD <- read.csv(text=getURL("https://raw.githubusercontent.com/shuailab/ind_498/master/resource/data/AD2.csv"))
-AD$ID = c(1:dim(AD)[1])
-str(AD)
-
 theme_set(theme_gray(base_size = 15))
-data <- AD
+data <- AD_full
 
-tree <- rpart(TOTAL13 ~ ., data)
+tree <- rpart(TOTAL13 ~ ., data, method="anova")
 prp(tree, nn.cex = 1)
 
 
 ```
-Because TOTAL13 is the continuous variables, the values of a variable are firstly ordered, and then the average of each pair of consecutive values is used as the splitting value. 
+Because TOTAL13 is the continuous variables, the average of each pair of consecutive values is used as splitting value the values.
 
 ```{r}
 print(tree$variable.importance)
 ```
-MMSCORE  has the largest importance scores amongall variables.
+FDG  has the largest importance scores among all variables.
 
 
-The tree can be further pruned with the prune function whereas the parameter cp controls the model complexity. cp is the minimum relative error improved by splitting the node. A larger cp leads to a less-complex tree. First, let we try cp = 0.05 and then cp = 0.1
+While cp controls the model complexity, the tree can be pruned with the prune function to minimize relative error by splitting the node. less-complex tree can be created by a larger cp. cp = 0.05 and then cp = 0.2 were used to compare the complexity of the decision tree model.
 ```{r}
 tree_0.05 <- prune(tree, cp = 0.05)
 prp(tree_0.05, nn.cex = 1)
 ```
 ```{r}
-tree_0.1 <- prune(tree, cp = 0.1)
+tree_0.1 <- prune(tree, cp = 0.2)
 prp(tree_0.1, nn.cex = 1)
 ```
-cp can be used to control the model complexity in pruning. cp can be decided by minimizing the cross-validation error. #For each tree, the number of decision nodes is recorded and used for measuring the complexity of the tree.
+As cp value becomes larger, the size of decision tree becomes smaller. 
+
+
+
+#Finding the adequate number of the leaf nodes
+
+In order to find the adquate size of the nodes, we conducted further analysis on the model. We used the half of the data points for training a decision tree and the rest of them for testing. As training error and testing error can be calculated for each structure, the number of leaf nodes can be found and used for complexity measurement of the tree.
+
+```{r,cache=FALSE}
+set.seed(1)
+train_sample <- sample(nrow(data),floor( nrow(data)/2) )
+errintrain <- NULL
+errintest <- NULL
+leaf.v <- NULL
+
+for(i in seq(0.2,0,by=-0.005) ){
+  tree <- rpart( TOTAL13 ~ ., data = data[train_sample,], cp= i  ) 
+  pred.train <- floor(predict(tree, data[train_sample,]))
+  pred.test <- floor(predict(tree, data[-train_sample,]))
+  current_error_train <- length(which(pred.train != data[train_sample,]$TOTAL13))/length(pred.train)
+  current_error_test <- length(which(pred.test != data[-train_sample,]$TOTAL13))/length(pred.test)
+  errintrain <- c(errintrain, current_error_train)
+  errintest <- c(errintest, current_error_test)
+  leaf.v <- c(leaf.v, length(which(tree$frame$var == "<leaf>")))
+}
+err.mat <- as.data.frame( cbind( train_err = errintrain, test_err = errintest , leaf_num = leaf.v ) )
+err.mat$leaf_num <- as.factor( err.mat$leaf_num  )
+err.mat <- unique(err.mat)
+err.mat <- err.mat %>% gather(type, error, train_err,test_err)
+print(err.mat)
+```
+
+
+The test errors and train errors according to different size of the leaf nodes are plotted.  Train errors generatlly decrease while the test errerors first decrease and then increase at leaf number eqauals to 5. Therefore, The adequate number of leaf node would be 5. Other leaf numbers may result overfitting of predicted data.
+```{r}
+data.plot <- err.mat %>% mutate(type = type)
+ggplot(data.plot, aes(x=leaf_num, y=error, shape = type, color=type)) + geom_line() +
+  geom_point(size=5) 
+```
+
+Final decision tree model can be selected with the 5 decision (leaf) nodes WITH cp = 0.02
+```{r}
+tree_0.020 <- prune(tree, cp = 0.02)
+prp(tree_0.05, nn.cex = 1)
+```
+
 
 #Comparison between regression model and tree model
 
-Decision tree selected the 4 variables : MMSCORE, HippoNV, FDG and e4_1 as nodes. #Three variables including FDB, HippoNV, MMSCORE are the common variables with the fianl model with 6 valueables (FDG,AV45,HippoNV,rs744373,rs3764650,MMSCORE).
+Decision tree used the 4 variables :  FDG, HippoNV, AV45, AGE for the 5 decision nodes (using FDG twice with different threasholds). Three variables including FDB, HippoNV, AV45 are the commonly shared with the fianl regression model with 6 valueables (PTEDUCAT,FDG,AV45,HippoNV,rs610932 ,rs3865444).
 
-when applying a decision tree to a dataset with linear relationship between predictors and outcome variables, it may not be an optimal choice. It can be seen the classification boundary from the logistics regression model is linear, while the one from the decision tree is parallel to the axis. This limitation makes a decision tree not be able to fully capture the linear relationship in the data.
+Mean square error (MSE) can be used for comparing the two models. 
+
+MSE of our regression model can be calculated as:
+```{r}
+install.packages("Metrics")
+library(Metrics)
+
+predictedvalue <- predict(lm.AD.F,data)
+mse(data$TOTAL13,predictedvalue)
+
+#double check the function mse() is working
+mean((data$TOTAL13-predictedvalue)^2)
+
+```
+
+MSE of our decision tree model can be calculated as:
+
+```{r}
+install.packages("Metrics")
+library(Metrics)
+
+predictedvalue <- predict(tree_0.020,data)
+mse(data$TOTAL13,predictedvalue)
+
+#double check the function mse() is working
+mean((data$TOTAL13-predictedvalue)^2)
+
+```
+
+As MSE of regression model is lower than MSE of tree model. Therefore, we should choose regression model over tree model to minimize the errors. 
 
 #Reference: 
 textbook, PennState Eberly College of Science (https://onlinecourses.science.psu.edu/stat501), University of Virginia Library (http://data.library.virginia.edu/understanding-q-q-plots/)
@@ -426,7 +470,6 @@ We first fit an initial linear regression model with all of the features to pred
 
 ```{r}
 lm.males <- lm(wage~., data=df.males)
-summary(lm.males)
 ```
 Next we used some feature selection using stepwise regresssion to fit the best model. The final model produced from the stepwise regression found all but the health feature to be signficant. By analyzing the difference in the models, we can see that the R-squared was only reduced to 28.53%. The final found every feature and the intercept to be significant. When looking at the coeffecients, that years of schooling, year of experience, union, ethnicity, and being married all had a positive impact on wages per unit increase while keeping all others constant. Other coeffecients were a mix of positive and negative values. 
 
